@@ -1,8 +1,8 @@
 package practice;
 
 import java.util.Arrays;
-import java.util.stream.Stream;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import model.Candidate;
 
 public class CandidateValidator implements Predicate<Candidate> {
@@ -13,16 +13,18 @@ public class CandidateValidator implements Predicate<Candidate> {
     @Override
     public boolean test(Candidate candidate) {
         return Stream.of(candidate)
-                .filter(currentCandidate -> currentCandidate != null)
-                .filter(currentCandidate -> currentCandidate.getAge() >= REQUIRED_AGE)
-                .filter(currentCandidate -> REQUIRED_NATIONALITY.equals(currentCandidate.getNationality()))
+                .filter(c -> c != null)
+                .filter(c -> c.getAge() >= REQUIRED_AGE)
+                .filter(c -> REQUIRED_NATIONALITY.equals(c.getNationality()))
                 .filter(Candidate::isAllowedToVote)
-                .filter(currentCandidate -> Arrays.stream(currentCandidate.getPeriodsInUkr().split(","))
+                .filter(c -> Arrays.stream(c.getPeriodsInUkr().split(","))
                         .map(String::trim)
                         .filter(period -> !period.isEmpty())
                         .mapToInt(period -> {
                             String[] years = period.split("-");
-                            if (years.length != 2) return 0;
+                            if (years.length != 2) {
+                                return 0;
+                            }
                             try {
                                 int startYear = Integer.parseInt(years[0].trim());
                                 int endYear = Integer.parseInt(years[1].trim());
